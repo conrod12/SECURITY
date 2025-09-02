@@ -55,6 +55,28 @@ PORT     STATE SERVICE
   ## AUTHENTICATE TO A NEW SYSTEM
   ssh -MS /tmp/t1 username@127.0.0.1 -p 1112
 
+## PING SWEEP NEW NETWORK
+for i in {129..158}; do (ping -c 1 192.168.28.$i | grep "bytes from" &); done
+
+192.168.150.128 up 
+
+## CANCEL AND SET UP DYNAMIC PORT FORWARDING
+  ssh -S /tmp/jump jump -O cancel -D9050
+ssh -S /tmp/t1 t1 -O forward -D9050
+
+## PROXYCHAINS NMAP 
+  proxychains nmap 192.168.150.128
+proxychains nc 192.168.150.128 80
+proxychains nc 192.168.150.128 22
+80 ## HTTP
+22 ## SSH
+
+## PORT FORWARD
+ssh -S /tmp/t1 t1 -O forward -L3111:192.168.128:80 -L3112:192.168.150.128:22
+
+## RECON found username2 an password, authenticate to new system
+ssh -MS /tmp/t2 username@127.0.0.1 -p 3112
+
 
   
 
