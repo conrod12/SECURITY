@@ -27,17 +27,17 @@ Nmap scan report for 192.168.28.105
 Host is up (0.0010s latency).
 Not shown: 997 closed ports
 PORT     STATE SERVICE
-21/tcp   open  ftp
-23/tcp   open  telnet
+21/tcp   open  ftp verified ftp
+23/tcp   open  telnet verified
 2222/tcp open  EtherNetIP-1  ## verified ssh 
 
 Nmap scan report for 192.168.28.111
 Host is up (0.0011s latency).
 Not shown: 997 closed ports
 PORT     STATE SERVICE
-80/tcp   open  http
-2222/tcp open  EtherNetIP-1
-8080/tcp open  http-proxy
+80/tcp   open  http verified http
+2222/tcp open  EtherNetIP-1 verified ssh 
+8080/tcp open  http-proxy verified http 
 
 ## Verify ports on ALL hosts/ports
   proxychains nc 192.168.28.100 80 
@@ -45,6 +45,7 @@ PORT     STATE SERVICE
 
   ## SET up port forwarding
   ssh -S /tmp/jump jump -O forward -L1111:192.168.28.100:80 -L1112:192.168.28.100:2222 -L2111:192.168.28.105:2222
+ 
 
   To cancel a listen/local port ## ssh -S /tmp/jump jump -O cancel -L2111:192.168.28.105:2222
 
@@ -74,6 +75,8 @@ proxychains nc 192.168.150.128 22
 ## PORT FORWARD
 ssh -S /tmp/t1 t1 -O forward -L3111:192.168.128:80 -L3112:192.168.150.128:22
 
+
+
 ## RECON found username2 an password, authenticate to new system
 ssh -MS /tmp/t2 username@127.0.0.1 -p 3112
 
@@ -89,6 +92,10 @@ scan.sh
 Arp, ip a
 wgetting port 80.    stick to port forwarding.
 
+
+
+ssh -S /tmp/jump jump -O forward -L1114:192.168.28.111:8080
+ssh -S /tmp/jump jump -O forward -L1115:192.168.28.111:80
 
 
 
