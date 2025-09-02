@@ -78,6 +78,12 @@ ssh -S /tmp/t1 t1 -O forward -L3111:192.168.128:80 -L3112:192.168.150.128:22
 ssh -MS /tmp/t2 username@127.0.0.1 -p 3112
 
 
+SCRIPT TO USE
+ls -l /usr/share/nmap/scripts 
+proxychains --script==http-enum 192.168.28.100
+
+
+
   
 
 
