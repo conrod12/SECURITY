@@ -1,5 +1,5 @@
 ## CONTROL SOCKETS
-ssh -MS /tmp/jump student@
+ssh -MS /tmp/jump student@10.50.12.19
 
 for i in {97..126}; do (ping -c 1 192.168.28.$i | grep "bytes from" &); done
 
