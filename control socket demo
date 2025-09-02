@@ -80,7 +80,7 @@ ssh -MS /tmp/t2 username@127.0.0.1 -p 3112
 
 SCRIPT TO USE
 ls -l /usr/share/nmap/scripts 
-proxychains --script=http-enum 192.168.28.100
+proxychains nmap --script=http-enum 192.168.28.100
 
 
 
