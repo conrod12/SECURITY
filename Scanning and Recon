@@ -7,7 +7,9 @@ Domain and IP Data
 
 ssh demo1@10.50.15.172 -L1112:10.208.50.42:80
 
-##Control sokets
+##Control sockets
 ssh -MS /tmp/jump student@10.50.12.19 M- means multiplexing. S- means the socket.
-ping sweep only on jump box:   for i in {97..126}; do (ping -c 1 192.168.28.$i | grep "bytes from" &); done 
+
+PING SWEEP only on jump box:   for i in {97..126}; do (ping -c 1 192.168.28.$i | grep "bytes from" &); done 
+
 
