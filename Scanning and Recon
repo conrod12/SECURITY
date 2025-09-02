@@ -1,1 +1,11 @@
+DATA TO COLLECT
+Web Data
+Sensitive Data
+Publicly Accessible
+Social Media
+Domain and IP Data
 
+ssh demo1@10.50.15.172 -L1112:10.208.50.42:80
+
+##Control sokets
+ssh -MS /tmp/jump student@10.50.13.196
