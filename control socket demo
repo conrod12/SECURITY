@@ -84,7 +84,11 @@ proxychains nmap --script=http-enum 192.168.28.100
 
 
 
-  
+  NO GO!!! DON'T USE
+scan.sh
+Arp, ip a
+wgetting port 80.    stick to port forwarding.
+
 
 
 
