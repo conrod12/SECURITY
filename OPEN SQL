@@ -62,6 +62,40 @@ STACKING STATEMENTS
 
   
 
+DEMO WALK THROUGH 
+mysql -drop you in the sql server
+
+##GOLDEN STATEMENT
+select table_schema, table_name, column_name from information_schema.columns
+   <NAME OF COLUMN>,<NAME OF COLUMN>,<NAME OF COLUMN> FROM <NAME OF DATABASE>.<NAME OF TABLE>
+, names of column 
+name of the database (.)name of the table 
+
+database
+  table
+    column
+
+information_schema ##name of database                custom database aka "session" == flags 
+  columns          ##name of table
+    table-schema    ## name of columns
+    table_name       ## name of columns
+    column_name      ## name of columns
+
+
+COMMANDS FOR DATABASE
+  >use infomation_schema
+  >show tables ;
+  >show columns from columns
+  >select table_schema, table_name, column_name from information_schema.columns
+
+##default database
+information_schema
+performance_schema
+mysql
+information schema you will need to query 
+
+## QUERY
+select tireid,name,size from session.tires ;    #case sensitive 
 
 
 
@@ -72,4 +106,13 @@ STACKING STATEMENTS
 
 
 
-DEMO WALK THROUGH
+
+
+
+
+
+
+
+
+
+
