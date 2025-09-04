@@ -1,0 +1,75 @@
+SQL - Structured Query Language - ANSI Standard                                         UNION AND SELECT COMMANDS WE WILL FOCUS ON.
+SELECT- Extracts data from a database
+UNION -Used to combine the result-set of two or more SELECT statements
+USE -Selects the DB to use
+UPDATE- Updates data in a database
+DELETE -Deletes data from a database
+INSERT INTO -Inserts new data into a database
+CREATE DATABASE -Creates a new database
+ALTER DATABASE -Modifies a database
+CREATE TABLE -Creates a new table
+ALTER TABLE -Modifies a table
+DROP TABLE -Deletes a table
+CREATE INDEX -Creates an index (search key)
+DROP INDEX -Deletes an index
+
+authentication bypass 
+input this in user and password column 'OR 1='1  and click login this is a (POST REQUEST)
+payload of the post request in the developer console and click on the network tab and login to see the post request. 
+in the developer console click request to cature that payload of that data and then hit the toggle to turn on "raw" url padden version of that payload copy and paste (THIS IS A GET REQUEST) and put a ? mark before url and click ENTER
+
+
+
+standard sql injection 
+
+
+
+sQL INJECTION CONSIDERATION
+-Requires Valid SQL Queries
+-Fully patched systems can be vulnerable due to misconfiguration
+-Input Field Sanitization
+-String vs Integer Values #will add the $ or that bullet 
+-information_schema
+-GET Request versus POST Request HTTP methods
+
+
+UNSANITIZED FIELD
+  input fields can be found using a Single Quote ⇒ '
+    Will return extraneous information
+    ' closes a variable, to allow for additional statements/clauses
+    May show no errors or generic error (harder Injection)
+
+SANITIZED
+  input fields are checked for items that might harm the database (Items are removed, escaped, or turned into a single string)
+
+
+SERVER-SIDE QUERY PROCESSING 
+  The Server-Side Query that would be passed to MySQL from PHP would be:
+  BEFORE INPUT: SELECT id FROM users WHERE name=‘$name’ AND pass=‘$pass’;
+  AFTER INPUT:  SELECT id FROM users WHERE name=‘JohnDoe243’ AND pass=‘pass1234’;
+
+
+EXAMPLE -INJECTING YOUR STATEMENT
+  User enters tom' OR 1='1 in the name and pass fields.
+    ##Truth Statement: tom ' OR 1='1
+      Server-Side query executed would appear like this: SELECT id FROM users WHERE name=‘tom' OR 1='1’ AND pass=‘tom' OR 1='1’
+
+
+STACKING STATEMENTS
+  Chaining multiple statements together using a semi-colon ;
+  SELECT * FROM user WHERE id=‘Johnny'; DROP TABLE Customers; -- '
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+DEMO WALK THROUGH
