@@ -66,8 +66,15 @@ fget -file get stream- receive the input
 strtok -is used for tokenizing a C-style string based on a set of delimiters
 
 
-1) run the string.exe against the malware
-2) 
+1) run the string.exe against the malware  static. another command to run is TYPE to find the type of file. dont really cat binary.
+2) run the malwar in a safe environment
+3) open in ghidra
+4) search for strings in ghidra
+5)after you find the string click twice
+6) 
+
+                        TO PATCH 
+right click press patch instruction cmp to eax to eax   be mindful of which directory it saving to.
 
 
 
