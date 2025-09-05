@@ -59,7 +59,15 @@ PORTABLE EXECUTEABLE PATCHING/SOFTWARE ANALYSIS
   Apply Patch and Save
   Execute Patched Binary
 
-DEMO
+DEMO 
+        C++ basics 
+atoi  -ascii to integer
+fget -file get stream- receive the input 
+strtok -is used for tokenizing a C-style string based on a set of delimiters
+
+
+1) run the string.exe against the malware
+2) 
 
 
 
