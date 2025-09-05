@@ -29,3 +29,58 @@ X86_64 ASSEMBLY -MEMORY OFFSET
   64-Bit	Lower-32bits	Lower-16bits	Descrition
   RIP        EIP            IP         Instruction Pointer; holds address for next instruction to be executed
 
+
+X86_64 ASSEMBLY - COMMON INSTRUCTION POINTERS
+  MOV -move source to destination
+  PUSH -push source onto stack
+  POP -Pop top of stack to destination
+  INC -Increment source by 1
+  DEC -Decrement source by 1
+  ADD -Add source to destination
+  SUB -Subtract source from destination
+  CMP -Compare 2 values by subtracting them and setting the %RFLAGS register. ZeroFlag set means they are the same.
+  JMP -Jump to specified location
+  JLE -Jump if less than or equal
+  JE -Jump if equal
+
+
+X86_64 ASSEMBLY -FLAGS REGISTER
+    Flags Register - This register holds the current state of the processor, reflecting the outcomes of various operations and influencing subsequent instructions.
+    CF - Carry Flag -Generates a carry or borrow
+    ZF - Zero Flag -Set by most instructions if the result of an operation is binary zero
+    SF - Sign Flag -Set this bit the same as the most significant bit of the result. 0 = positive, 1 = negative
+    OF - Overflow Flag -Set if the result was too large to fit in the designation.
+
+
+PORTABLE EXECUTEABLE PATCHING/SOFTWARE ANALYSIS
+  Perform Debugging and Disassembly
+  Find the Success/Failure
+  Adjust Instructions
+  Apply Patch and Save
+  Execute Patched Binary
+
+DEMO
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
