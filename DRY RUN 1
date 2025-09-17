@@ -7,6 +7,6 @@ ssh demo1@10.50.15.9 -L 1111:10.208.50.200:80
 /var/www/html   gbgny
 
 Potential USERS
-jjj-qngn
+jjj - qngn
 ROT13
 www-data      gbgny
