@@ -771,7 +771,11 @@ priv 1 enumerate -
 
 
 ##################################### DRY RUN##########################################################
-
+ENUMERATE 
+  NMAP <IP>
+  NMAP --SCRIPT=HTTP-ENUM <IP>
+/LOGIN.HTML #COMMAND INJECTION 
+  TO FIND USERS HOME DIRECTORY ; CAT /ETC/PASSWD SECOND TO LAST IS HOME DIRECTORY.
 
 ################################## REVIEW #############################################
 CONROL SOCKETS
