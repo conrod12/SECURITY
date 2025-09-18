@@ -94,6 +94,10 @@ Run the following to chain/stack our arbitrary command
 
 ssh-keygen -t rsa -b 4096
 upload, navigate to the upload, be able to call or execute that thing
+1 create a connection, tell the server you want to talk
+2 ssh key exchange use algorithm such as diffie hellman to exchange what kind of keys the host and the server want to use without send the key over plain text.
+ssh -v to see the steps happening in ssh keys exchange.
+known_hosts store the public keys of ssh servers that a user or system has previously connected to and trusted.  /etc/ssh/ssh_known_hosts,    ~/.ssh/knownhosts
 
 malicious upload
   run whoami to see who the user is.
