@@ -843,6 +843,11 @@ FIND A FUNCTION
 windows open file explorer view hidden item 
  empty comment -services.
 
+ xfreerdp /u:Aaron /v:localhost:5007 /dynamic-resolution +clipboard           -to get to windows rdp session 
+rm /home/student/.config/freerdp/known_hosts                                  -run if the xfreerdp command don't work
+
+
+
 
 
 
